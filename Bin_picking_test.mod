@@ -36,7 +36,7 @@ MODULE Module1
                 !
                 WHILE BpObjectReady(comBp) DO
                     IF BpGetPick(comBp, poseBp) THEN
-                        TPWrite poseBp;
+                        TPWrite "poseBp";
                         ! Advance the BP queue
                         IF BpNextPick(comBp) = FALSE THEN
                             TPWrite "Failed to advance the BP parts queue";
@@ -45,7 +45,7 @@ MODULE Module1
                         
                         Stop;
                         ! TODO Do something with the part
-                        TPWrite poseBp;
+                        TPWrite "poseBp";
                     ENDIF
                 ENDWHILE
             ELSE
