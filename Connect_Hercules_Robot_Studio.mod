@@ -10,6 +10,7 @@ MODULE Module1
     VAR robtarget Target_hercules:=[[889,1368,1060],[1,0,0,0],[0,0,0,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
     !***********************************************************
     ! SafeMove variables
+    !test
     ! Interuptnumbers for violated fields
     VAR intnum WarningField_v;
     VAR intnum ProtectiveField_v;
