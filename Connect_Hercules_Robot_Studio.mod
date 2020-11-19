@@ -103,15 +103,30 @@ MODULE Module1
         VAR num posX;
         VAR num posY;
         VAR num posZ;
+		VAR num posQ1;
+        VAR num posQ2;
+        VAR num posQ3;
+        VAR num posQ4;
         
         ! Finds the position of first ";" in the string
         posX := StrFind(value,1,";");
         posY := StrFind(value,posX+1,";");
         posZ := StrFind(value,posY+1,";");
+		posQ1 := StrFind(value,posZ+1,";");
+        posQ2 := StrFind(value,posQ1+1,";");
+        posQ3 := StrFind(value,posQ2+1,";");
+        posQ4 := StrFind(value,posQ3+1,";");
         
+		! Pos data
         bResult:=StrToVal(StrPart(value,1,posX-1),tmpTarget.trans.x);
         bResult:=StrToVal(StrPart(value,posX+1,posY-posX-1),tmpTarget.trans.y);
         bResult:=StrToVal(StrPart(value,posY+1,posZ-posY-1),tmpTarget.trans.z);
+		
+		! Orient data
+        bResult:=StrToVal(StrPart(value,posZ+1,posQ1-posZ-1),tmpTarget.rot.q1);
+        bResult:=StrToVal(StrPart(value,posQ1+1,posQ2-posQ1-1),tmpTarget.rot.q2);
+        bResult:=StrToVal(StrPart(value,posQ2+1,posQ3-posQ2-1),tmpTarget.rot.q3);
+        bResult:=StrToVal(StrPart(value,posQ3+1,posQ4-posQ3-1),tmpTarget.rot.q4);
         
         RETURN tmpTarget;
     ENDFUNC
@@ -127,8 +142,7 @@ MODULE Module1
             Stop;
         ENDIF
     ENDPROC
-    
-    
+	
     PROC main_()
         Path_10;
     ENDPROC
