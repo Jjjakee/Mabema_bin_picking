@@ -6,6 +6,8 @@ MODULE Module1
         VAR SensActiveCom comBp;
         VAR string sBpIp := "127.0.0.1:5001";  !TODO
         VAR pose poseBp;
+        ![[9.70406,203.768,444.562],[-0.015035,0.706118,0.699947,-0.106047]]  returned from mabema 20.11
+
 
         IF (SensActiveInit(comBp)=FALSE AND SensActiveOpen(comBp,sBpIp,\nTimeout:=6)) THEN
 
