@@ -5,10 +5,33 @@ MODULE Module1
     CONST robtarget rBpPickNoOffset:=[[0,0,0],[1,0,0,0],[0,0,0,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
     CONST robtarget rAboveBox:=[[-43.15,601.91,594.56],[0.0039395,-0.908162,-0.418584,0.00359836],[0,-1,0,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
 
+    CONST robtarget Home:=[[524.584,1228.139,1077.999],[1,0,0,0],[0,0,0,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    PERS robtarget Drop:=[[0,0,0],[0,1,0,0],[0,0,0,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    PERS robtarget Pickup:=[[400,203.768,444.562],[-0.015035,0.706118,0.699947,-0.106047],[-1,0,1,0],[9E+9,9E+9,9E+9,9E+9,9E+9,9E+9]];
+
     PROC main()
-        VAR pose poseBpPos:=[[9.70406,203.768,444.562],[-0.015035,0.706118,0.699947,-0.106047]];
+        !Use this function when connected to Mabema to get coordinates of scanned pieces
         !GetCoordinates;
-        GetPartBox rAboveBox, rBpPickNoOffset, tGripper, wBpPallet, wBpCalibration, poseBpPos;
+        VAR pose poseBpPos:=[[400,203.768,444.562],[-0.015035,0.706118,0.699947,-0.106047]];
+        
+        !GetPartBox rAboveBox, rBpPickNoOffset, tGripper, wBpPallet, wBpCalibration, poseBpPos;
+        
+        ! Adjust the pickup location according to the pose from Mabema
+        Pickup.trans.x := poseBpPos.trans.x;
+        Pickup.trans.y := poseBpPos.trans.y;
+        Pickup.trans.z := poseBpPos.trans.z;
+        Pickup.rot := poseBpPos.rot;
+        
+        ! Move the robot to pickup the scanned part and drop it to the drop point
+        MoveJ Home,v500,z100,tGroup1gripperTool\WObj:=wobj0;
+        MoveJ Offs(Pickup,0,0,100),v500,fine,currentTool\WObj:=Workobject_6;
+        MoveJ Pickup,v200,fine,currentTool\WObj:=Workobject_6;
+        MoveJ Offs(Pickup,0,0,100),v500,fine,currentTool\WObj:=Workobject_6;
+        MoveJ Offs(Drop,0,0,300),v500,fine,currentTool\WObj:=Workobject_4;
+        MoveJ Drop,v200,fine,currentTool\WObj:=Workobject_4;
+        MoveJ Offs(Drop,0,0,100),v500,fine,currentTool\WObj:=Workobject_4;
+        MoveJ Home,v500,z100,tGroup1gripperTool\WObj:=wobj0;
+        
     ENDPROC
 
     PROC GetCoordinates()
@@ -233,6 +256,6 @@ MODULE Module1
         rOut.rot := pOut.rot;
         RETURN rOut;
     ENDFUNC
-
-
+   
+   
 ENDMODULE
