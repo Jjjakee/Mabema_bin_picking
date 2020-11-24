@@ -10,6 +10,7 @@ MODULE Module1
     VAR robtarget Target_hercules:=[[889,1368,1060],[1,0,0,0],[0,0,0,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
     !***********************************************************
     ! SafeMove variables
+    !test
     ! Interuptnumbers for violated fields
     VAR intnum WarningField_v;
     VAR intnum ProtectiveField_v;
@@ -102,15 +103,44 @@ MODULE Module1
         VAR num posX;
         VAR num posY;
         VAR num posZ;
+		VAR num posQ1;
+        VAR num posQ2;
+        VAR num posQ3;
+        VAR num posQ4;
+		VAR num poscf1;
+        VAR num poscf4;
+        VAR num poscf6;
+        VAR num poscfx;
         
         ! Finds the position of first ";" in the string
         posX := StrFind(value,1,";");
         posY := StrFind(value,posX+1,";");
         posZ := StrFind(value,posY+1,";");
+		posQ1 := StrFind(value,posZ+1,";");
+        posQ2 := StrFind(value,posQ1+1,";");
+        posQ3 := StrFind(value,posQ2+1,";");
+        posQ4 := StrFind(value,posQ3+1,";");
+		poscf1 := StrFind(value,posQ4+1,";");
+        poscf4 := StrFind(value,poscf1+1,";");
+        poscf6 := StrFind(value,poscf4+1,";");
+        poscfx := StrFind(value,poscf6+1,";");
         
+		! Pos data
         bResult:=StrToVal(StrPart(value,1,posX-1),tmpTarget.trans.x);
         bResult:=StrToVal(StrPart(value,posX+1,posY-posX-1),tmpTarget.trans.y);
         bResult:=StrToVal(StrPart(value,posY+1,posZ-posY-1),tmpTarget.trans.z);
+		
+		! Orient data
+        bResult:=StrToVal(StrPart(value,posZ+1,posQ1-posZ-1),tmpTarget.rot.q1);
+        bResult:=StrToVal(StrPart(value,posQ1+1,posQ2-posQ1-1),tmpTarget.rot.q2);
+        bResult:=StrToVal(StrPart(value,posQ2+1,posQ3-posQ2-1),tmpTarget.rot.q3);
+        bResult:=StrToVal(StrPart(value,posQ3+1,posQ4-posQ3-1),tmpTarget.rot.q4);
+		
+		! Conf data
+        bResult:=StrToVal(StrPart(value,posQ4+1,poscf1-posQ4-1),tmpTarget.robconf.cf1);
+        bResult:=StrToVal(StrPart(value,poscf1+1,poscf4-poscf1-1),tmpTarget.robconf.cf4);
+        bResult:=StrToVal(StrPart(value,poscf4+1,poscf6-poscf4-1),tmpTarget.robconf.cf6);
+        bResult:=StrToVal(StrPart(value,poscf6+1,poscfx-poscf6-1),tmpTarget.robconf.cfx);
         
         RETURN tmpTarget;
     ENDFUNC
@@ -126,8 +156,7 @@ MODULE Module1
             Stop;
         ENDIF
     ENDPROC
-    
-    
+	
     PROC main_()
         Path_10;
     ENDPROC
