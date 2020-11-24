@@ -1,19 +1,19 @@
 MODULE Module1
 
-    PERS tooldata tGripper :=[TRUE,[[0,0,510],[0.241576,0.00117355,0.000136995,0.970381]],[20,[0,0,400],[1,0,0,0],0,0,0]];
+    PERS tooldata tGripper :=[TRUE,[[0.000000001,0.000000002,100],[0.970381172,-0.000136996,0.001173549,-0.241576042]],[20,[0,0,400],[1,0,0,0],0,0,0]];
     PERS wobjdata wBpCalibration := [FALSE,TRUE,"",[[1747.6,354.153,494.523],[0.356431,0.0209332,0.0362679,0.933383]],[[0,0,0],[1,0,0,0]]];
     CONST robtarget rBpPickNoOffset:=[[0,0,0],[1,0,0,0],[0,0,0,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
     CONST robtarget rAboveBox:=[[-43.15,601.91,594.56],[0.0039395,-0.908162,-0.418584,0.00359836],[0,-1,0,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
 
-    CONST robtarget Home:=[[524.584,1228.139,1077.999],[1,0,0,0],[0,0,0,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
-    PERS robtarget Drop:=[[0,0,0],[0,1,0,0],[0,0,0,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
-    PERS robtarget Pickup:=[[400,203.768,444.562],[-0.015035,0.706118,0.699947,-0.106047],[-1,0,1,0],[9E+9,9E+9,9E+9,9E+9,9E+9,9E+9]];
+    CONST robtarget Home:=[[524.584,1228.139,1077.999],[0,1,0,0],[0,0,0,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    PERS robtarget Drop:=[[50,50,0],[0,1,0,0],[0,0,0,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    PERS robtarget Pickup:=[[9.70406,203.768,444.562],[-0.015035,0.706118,0.699947,-0.106047],[-1,0,1,0],[9E+9,9E+9,9E+9,9E+9,9E+9,9E+9]];
 
     PROC main()
         !Use this function when connected to Mabema to get coordinates of scanned pieces
         !GetCoordinates;
-        VAR pose poseBpPos:=[[400,203.768,444.562],[-0.015035,0.706118,0.699947,-0.106047]];
-        
+        !Coordinates copied from the screenshot
+        VAR pose poseBpPos:=[[211,20,921],[0.072,-0.0013,0.99,0.018]];
         !GetPartBox rAboveBox, rBpPickNoOffset, tGripper, wBpPallet, wBpCalibration, poseBpPos;
         
         ! Adjust the pickup location according to the pose from Mabema
@@ -23,14 +23,32 @@ MODULE Module1
         Pickup.rot := poseBpPos.rot;
         
         ! Move the robot to pickup the scanned part and drop it to the drop point
-        MoveJ Home,v500,z100,tGroup1gripperTool\WObj:=wobj0;
-        MoveJ Offs(Pickup,0,0,100),v500,fine,currentTool\WObj:=Workobject_6;
-        MoveJ Pickup,v200,fine,currentTool\WObj:=Workobject_6;
-        MoveJ Offs(Pickup,0,0,100),v500,fine,currentTool\WObj:=Workobject_6;
-        MoveJ Offs(Drop,0,0,300),v500,fine,currentTool\WObj:=Workobject_4;
-        MoveJ Drop,v200,fine,currentTool\WObj:=Workobject_4;
-        MoveJ Offs(Drop,0,0,100),v500,fine,currentTool\WObj:=Workobject_4;
-        MoveJ Home,v500,z100,tGroup1gripperTool\WObj:=wobj0;
+        MoveJ Home,v500,z100,tGripper\WObj:=wobj0;
+        MoveJ Offs(Pickup,0,0,300),v500,fine,tGripper\WObj:=Workobject_6;
+        MoveJ Pickup,v100,fine,tGripper\WObj:=Workobject_6;
+        MoveJ Offs(Pickup,0,0,300),v100,fine,tGripper\WObj:=Workobject_6;
+        MoveJ Offs(Drop,0,0,300),v500,fine,tGripper\WObj:=Workobject_4;
+        MoveJ Drop,v100,fine,tGripper\WObj:=Workobject_4;
+        MoveJ Offs(Drop,0,0,100),v100,fine,tGripper\WObj:=Workobject_4;
+        
+        !GetCoordinates;
+        ! Actual coordinates sent by Mabema CRASH!
+        poseBpPos:=[[9.70406,203.768,444.562],[-0.015035,0.706118,0.699947,-0.106047]];
+        
+        ! Adjust the pickup location according to the pose from Mabema
+        Pickup.trans.x := poseBpPos.trans.x;
+        Pickup.trans.y := poseBpPos.trans.y;
+        Pickup.trans.z := poseBpPos.trans.z;
+        Pickup.rot := poseBpPos.rot;
+        
+        MoveJ Offs(Pickup,0,0,300),v500,fine,tGripper\WObj:=Workobject_6;
+        MoveJ Pickup,v100,fine,tGripper\WObj:=Workobject_6;
+        MoveJ Offs(Pickup,0,0,300),v100,fine,tGripper\WObj:=Workobject_6;
+        MoveJ Offs(Drop,200,200,300),v500,fine,tGripper\WObj:=Workobject_4;
+        MoveJ Offs(Drop,200,200,0),v100,fine,tGripper\WObj:=Workobject_4;
+        MoveJ Offs(Drop,200,200,300),v100,fine,tGripper\WObj:=Workobject_4;
+        
+        MoveJ Home,v500,z100,tGripper\WObj:=wobj0;
         
     ENDPROC
 
